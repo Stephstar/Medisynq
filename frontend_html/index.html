@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medisynq Telemedicine Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Medisynq Telemedicine Platform</h1>
+        <nav id="mainNav">
+            <a href="index.html">Home</a>
+            <span id="authLinks">
+                <a href="login.html">Login</a>
+                <a href="register.html">Register</a>
+            </span>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="consultations.html">Consultations</a>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Welcome to Medisynq Telemedicine Platform</h2>
+            <p>
+                Medisynq is a secure telemedicine platform for patients and doctors. Patients can book appointments, consult with doctors, track vitals, and manage their health records online. Doctors can manage their patients, prescribe medications, and monitor adherence—all in one place.
+            </p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Medisynq</p>
+    </footer>
+</body>
+<script>
+    // Hide login/register if already authenticated
+    const token = localStorage.getItem('access');
+    const authLinks = document.getElementById('authLinks');
+    if (authLinks) {
+        if (token) {
+            authLinks.style.display = 'none';
+        } else {
+            authLinks.style.display = 'inline';
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Medisynq</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Medisynq Telemedicine Platform</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Register</h2>
+            <form id="registerForm">
+                <label for="username">👤 Username:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="email">✉️ Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="password">🔒 Password:</label>
+                <input type="password" id="password" name="password" required>
+                <label for="role">🧑‍⚕️ Role:</label>
+                <select id="role" name="role" required>
+                    <option value="patient">Patient</option>
+                    <option value="doctor">Doctor</option>
+                </select>
+                <label for="dob">🎂 Date of Birth:</label>
+                <input type="date" id="dob" name="dob">
+                <label for="contact">📱 Contact:</label>
+                <input type="text" id="contact" name="contact">
+                <div id="doctorFields" style="display:none;">
+                    <label for="specialization">🏥 Specialization:</label>
+                    <input type="text" id="specialization" name="specialization">
+                    <label for="years_of_experience">📅 Years of Experience:</label>
+                    <input type="number" id="years_of_experience" name="years_of_experience" min="0">
+                    <label for="hospital">🏨 Hospital:</label>
+                    <input type="text" id="hospital" name="hospital">
+                </div>
+                <button type="submit">Register</button>
+            </form>
+            <script>
+            // Show specialization only for doctors
+            document.getElementById('role').addEventListener('change', function() {
+                document.getElementById('doctorFields').style.display = this.value === 'doctor' ? '' : 'none';
+            });
+            </script>
+            <div id="registerMessage"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Medisynq</p>
+    </footer>
+    <script src="register.js"></script>
+</body>
+</html>

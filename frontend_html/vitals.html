@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitals - Medisynq</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Medisynq Telemedicine Platform</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="profile.html">Profile</a>
+            <a href="vitals.html">Vitals</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="consultations.html">Consultations</a>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Submit Vital Signs</h2>
+            <form id="vitalForm">
+                <label for="vital_type">🩸 Vital Type:</label>
+                <select id="vital_type" name="vital_type" required>
+                    <option value="bp">Blood Pressure</option>
+                    <option value="hr">Heart Rate</option>
+                    <option value="glucose">Glucose</option>
+                    <option value="temp">Temperature</option>
+                </select>
+                <label for="value">🔢 Value:</label>
+                <input type="number" id="value" name="value" required>
+                <button type="submit">Submit</button>
+            </form>
+            <div id="vitalMessage"></div>
+        </section>
+        <section>
+            <h2>Vitals History</h2>
+            <table id="vitalsTable">
+                <thead>
+                    <tr><th>Type</th><th>Value</th><th>Timestamp</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Medisynq</p>
+    </footer>
+    <script src="nav.js"></script>
+    <script src="vitals.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultations - Medisynq</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Medisynq Telemedicine Platform</h1>
+        <nav id="mainNav"></nav>
+    </header>
+    <main>
+        <section>
+            <h2>Book Consultation</h2>
+            <form id="consultationForm">
+                <label for="doctor">🩺 Doctor:</label>
+                <input type="text" id="doctor" name="doctor" required>
+                <label for="scheduled_time">📅 Date & Time:</label>
+                <input type="datetime-local" id="scheduled_time" name="scheduled_time" required>
+                <label for="whatsapp_number">💬 WhatsApp Number (optional):</label>
+                <input type="text" id="whatsapp_number" name="whatsapp_number">
+                <button type="submit">Book Consultation</button>
+            </form>
+            <div id="consultationMessage"></div>
+        </section>
+        <section>
+            <h2>Consultations</h2>
+            <table id="consultationsTable">
+                <thead>
+                    <tr><th>Doctor</th><th>Time</th><th>Jitsi/WhatsApp</th><th>Notes</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Start Video Consultation</h2>
+            <input type="text" id="jitsiRoom" placeholder="Enter Jitsi Room Name">
+            <button onclick="startJitsiCall()">Start Jitsi Call</button>
+            <div id="jitsiContainer"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Medisynq</p>
+    </footer>
+    <script src="nav.js"></script>
+    <script src="consultations.js"></script>
+</body>
+</html>

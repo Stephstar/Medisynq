@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Medisynq</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Medisynq Telemedicine Platform</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="profile.html">Profile</a>
+            <a href="vitals.html">Vitals</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="patients.html">Patients</a>
+            <a href="consultations.html">Consultations</a>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Profile Management</h2>
+            <form id="profileForm">
+                <label for="username">👤 Username:</label>
+                <input type="text" id="username" name="username" disabled>
+                <label for="email">✉️ Email:</label>
+                <input type="email" id="email" name="email">
+                <label for="dob">🎂 Date of Birth:</label>
+                <input type="date" id="dob" name="dob">
+                <label for="contact">📱 Contact:</label>
+                <input type="text" id="contact" name="contact">
+                <div id="doctorFields" style="display:none;">
+                    <label for="specialization">🏥 Specialization:</label>
+                    <input type="text" id="specialization" name="specialization">
+                    <label for="years_of_experience">📅 Years of Experience:</label>
+                    <input type="number" id="years_of_experience" name="years_of_experience" min="0">
+                    <label for="hospital">🏨 Hospital:</label>
+                    <input type="text" id="hospital" name="hospital">
+                </div>
+                <button type="submit">Update Profile</button>
+            </form>
+            <div id="profileMessage"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Medisynq</p>
+    </footer>
+    <script src="nav.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>
