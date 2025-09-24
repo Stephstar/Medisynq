@@ -12,7 +12,7 @@ services:
       - key: DEBUG
         value: False
       - key: ALLOWED_HOSTS
-        value: .onrender.com
+        value: medisynq-1.onrender.com
       - key: EMAIL_HOST
         value: smtp.gmail.com
       - key: EMAIL_PORT
@@ -24,4 +24,5 @@ services:
       - key: EMAIL_USE_TLS
         value: True
       - key: DATABASE_URL
-        value: your-postgres-url-from-render
+        value: postgres://medisynq_user:z7GlhCDT3LUXGPEgVLmzj2j81dz22DGr@dpg-d3a5mgn5r7bs73fkp3t0-a/medisynq
+
