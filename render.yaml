@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: medisynq-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn medisynq_backend.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: medisynq_backend.settings
+      - key: SECRET_KEY
+        value: k94dd#ax7#htzz#e6ara^3fzr_o@$!w7yckcrmboi&w$vkmxe3
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_HOST_USER
+        value: stephenodong849@gmail.com
+      - key: EMAIL_HOST_PASSWORD
+        value: dvdndrbglrkmbfro
+      - key: EMAIL_USE_TLS
+        value: True
+      - key: DATABASE_URL
+        value: your-postgres-url-from-render
