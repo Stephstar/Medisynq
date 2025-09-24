@@ -6,8 +6,8 @@ env = environ.Env()
 environ.Env.read_env()
 
 SECRET_KEY = env('SECRET_KEY', default='k94dd#ax7#htzz#e6ara^3fzr_o@$!w7yckcrmboi&w$vkmxe3')
-DEBUG = env.bool('DEBUG', default=True)
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.onrender.com', 'localhost', '127.0.0.1'])
+DEBUG = env.bool('DEBUG', default=False)
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['medisynq-1.onrender.com', 'localhost', '127.0.0.1'])
 
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = env.int('EMAIL_PORT', default=587)
@@ -16,7 +16,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default=f'sqlite:///{BASE_DIR}/db.sqlite3')
+    'default': env.db('DATABASE_URL', default=f'postgres://medisynq_user:z7GlhCDT3LUXGPEgVLmzj2j81dz22DGr@dpg-d3a5mgn5r7bs73fkp3t0-a/medisynq')
 }
 
 STATIC_URL = 'static/'
