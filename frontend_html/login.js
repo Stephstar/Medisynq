@@ -1,18 +1,33 @@
-document.getElementById('loginForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const response = await fetch('http://127.0.0.1:8000/api/users/login/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    });
-    const data = await response.json();
-    if (response.ok && data.access) {
-        localStorage.setItem('access', data.access);
-        localStorage.setItem('refresh', data.refresh);
-        window.location.href = 'dashboard.html';
-    } else {
-        document.getElementById('loginMessage').textContent = data.detail || 'Login failed.';
+// frontend_html/login.js
+document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const res = await fetch(`${API_BASE}users/login/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+  if (res.ok && data.access) {
+    localStorage.setItem(JWT_KEY, data.access);
+    // Fetch profile to determine role and redirect
+    try {
+      const profileRes = await fetch(`${API_BASE}users/profile/`, { headers: authHeaders() });
+      if (profileRes.ok) {
+        const profile = await profileRes.json();
+        const role = profile.role || 'patient';
+        if (role === 'doctor') window.location.href = 'doctor_dashboard.html';
+        else window.location.href = 'dashboard.html';
+        return;
+      }
+    } catch (err) {
+      // fallback
     }
+    window.location.href = 'dashboard.html';
+  } else {
+    document.getElementById('loginMessage').textContent = data.detail || 'Login failed';
+  }
 });

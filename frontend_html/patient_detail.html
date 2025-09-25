@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient EHR - Medisynq</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+    <script src="nav.js" defer></script>
+    <script src="patient_detail.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Medisynq Telemedicine Platform</h1>
+        <nav id="main-nav"></nav>
+    </header>
+    <main>
+        <section>
+            <h2>Patient EHR</h2>
+            <div id="ehrMessage"></div>
+            <h3>Appointments</h3>
+            <table id="appointmentsTable">
+                <thead><tr><th>ID</th><th>Date/Time</th><th>Status</th><th>Notes</th></tr></thead>
+                <tbody></tbody>
+            </table>
+            <h3>Vitals History</h3>
+            <table id="vitalsTable">
+                <thead><tr><th>Timestamp</th><th>Type</th><th>Value</th></tr></thead>
+                <tbody></tbody>
+            </table>
+            <h3>Medications & Adherence</h3>
+            <table id="medicationsTable">
+                <thead><tr><th>Name</th><th>Dosage</th><th>Instructions</th><th>Start/End</th><th>Adherence</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Medisynq</p>
+    </footer>
+</body>
+</html>

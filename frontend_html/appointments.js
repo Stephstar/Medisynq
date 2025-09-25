@@ -1,58 +1,59 @@
-const token = localStorage.getItem('access');
-if (!token) {
-    document.getElementById('appointmentMessage').textContent = 'Please login to book/view appointments.';
-} else {
-    // Fetch doctor list for dropdown
-    fetch('http://127.0.0.1:8000/api/users/doctor-list/', {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(doctors => {
-        const doctorSelect = document.getElementById('doctor');
-        doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
-        doctors.forEach(doc => {
-            doctorSelect.innerHTML += `<option value="${doc.id}">${doc.username} (${doc.specialization || ''}, ${doc.years_of_experience || ''} yrs, ${doc.hospital || ''})</option>`;
-        });
-    });
+// frontend_html/appointments.js
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem(JWT_KEY);
+  const msg = document.getElementById('appointmentMessage');
+  if (!token) { if (msg) msg.textContent = 'Please login to manage appointments.'; return; }
 
-    // Load appointments
-    fetch('http://127.0.0.1:8000/api/appointments/', {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(data => {
-        const tbody = document.querySelector('#appointmentsTable tbody');
-        tbody.innerHTML = '';
-        if (!Array.isArray(data)) {
-            document.getElementById('appointmentMessage').textContent = data.detail || 'Error loading appointments.';
-            return;
-        }
-        data.forEach(app => {
-            const row = `<tr><td>${app.doctor}</td><td>${app.scheduled_time}</td><td>${app.status}</td><td>${app.notes}</td></tr>`;
-            tbody.innerHTML += row;
-        });
+  // load doctors
+  fetch(`${API_BASE}users/doctor-list/`, { headers: authHeaders() })
+    .then(r => r.json())
+    .then(docs => {
+      const sel = document.getElementById('doctor');
+      if (!sel) return;
+      sel.innerHTML = '<option value="">Choose doctor</option>';
+      docs.forEach(d => sel.innerHTML += `<option value="${d.id}">${d.username} ${d.specialization ? '('+d.specialization+')' : ''}</option>`);
+    }).catch(() => { if (msg) msg.textContent = 'Failed to load doctors.'; });
+
+  // load appointments and render table
+  async function loadAppointments() {
+    const r = await fetch(`${API_BASE}appointments/`, { headers: authHeaders() });
+    if (!r.ok) { if (msg) msg.textContent = 'Could not load appointments'; return; }
+    const list = await r.json();
+    const tbody = document.querySelector('#appointmentsTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    list.forEach(a => {
+      tbody.innerHTML += `<tr><td>${a.id}</td><td>${a.doctor.username || a.doctor}</td><td>${a.scheduled_time}</td><td>${a.status}</td></tr>`;
     });
-}
-document.getElementById('appointmentForm').addEventListener('submit', async function(e) {
+  }
+  loadAppointments();
+
+  document.getElementById('appointmentForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!token) return;
-    const doctor = document.getElementById('doctor').value;
-    let scheduled_time = document.getElementById('scheduled_time').value;
-    if (scheduled_time) {
-        scheduled_time = new Date(scheduled_time).toISOString();
+    const doc = document.getElementById('doctor').value;
+    let scheduled = document.getElementById('scheduled_time').value;
+    if (!doc || !scheduled) { if (msg) msg.textContent = 'Doctor and datetime required'; return; }
+    scheduled = new Date(scheduled).toISOString();
+
+    // pre-check with backend
+    const chk = await fetch(`${API_BASE}appointments/check-availability/?doctor=${doc}&scheduled_time=${encodeURIComponent(scheduled)}`, { headers: authHeaders() });
+    const jsonChk = await chk.json();
+    if (!chk.ok || jsonChk.available === false) {
+      if (msg) msg.textContent = jsonChk.detail || 'Doctor not available';
+      return;
     }
-    const response = await fetch('http://127.0.0.1:8000/api/appointments/book/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ doctor, scheduled_time })
+
+    const res = await fetch(`${API_BASE}appointments/book/`, {
+      method: 'POST',
+      headers: jsonHeaders(),
+      body: JSON.stringify({ doctor: doc, scheduled_time: scheduled })
     });
-    const data = await response.json();
-    if (response.ok) {
-        document.getElementById('appointmentMessage').textContent = 'Appointment booked!';
+    const data = await res.json();
+    if (res.ok) {
+      if (msg) msg.textContent = 'Booked successfully';
+      setTimeout(() => loadAppointments(), 800);
     } else {
-        document.getElementById('appointmentMessage').textContent = data.detail || 'Booking failed.';
+      if (msg) msg.textContent = data.detail || JSON.stringify(data) || 'Booking failed';
     }
+  });
 });

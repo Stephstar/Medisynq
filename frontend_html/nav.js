@@ -1,40 +1,41 @@
-// Dynamically render navigation links based on login status
-function renderNav() {
-    const nav = document.getElementById('mainNav');
-    if (!nav) return;
-    const token = localStorage.getItem('access');
-    if (token) {
-        // Fetch user role for role-based nav
-        fetch('http://127.0.0.1:8000/api/users/profile/', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
-        .then(res => res.json())
-        .then(data => {
-            let links = `<a href="index.html">Home</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="profile.html">Profile</a>
-                <a href="vitals.html">Vitals</a>
-                <a href="appointments.html">Appointments</a>`;
-            if (data.role === 'doctor') {
-                links += `<a href="doctor_dashboard.html">Doctor Dashboard</a>
-                    <a href="patients.html">Patients</a>`;
-            }
-            links += `<a href="consultations.html">Consultations</a>
-                <a href="#" onclick="logout()">Logout</a>`;
-            nav.innerHTML = links;
-        });
-    } else {
-        nav.innerHTML = `
-            <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
-            <a href="consultations.html">Consultations</a>
+// frontend_html/nav.js
+document.addEventListener('DOMContentLoaded', async () => {
+  const navHolder = document.getElementById('main-nav');
+  const token = localStorage.getItem(JWT_KEY);
+  let html = '';
+
+  if (token) {
+    try {
+      const profileRes = await fetch(`${API_BASE}users/profile/`, { headers: authHeaders() });
+      if (profileRes.ok) {
+        const profile = await profileRes.json();
+        const role = profile.role || 'patient';
+        html = `
+          <a href="dashboard.html">Dashboard</a>
+          ${role === 'doctor' ? '<a href="doctor_dashboard.html">Doctor</a>' : ''}
+          <a href="patients.html">Patients</a>
+          <a href="appointments.html">Appointments</a>
+          <a href="vitals.html">Vitals</a>
+          <a href="#" id="logout">Logout</a>
         `;
+      } else {
+        html = `<a href="dashboard.html">Dashboard</a><a href="#" id="logout">Logout</a>`;
+      }
+    } catch (e) {
+      html = `<a href="dashboard.html">Dashboard</a><a href="#" id="logout">Logout</a>`;
     }
-}
-function logout() {
-    localStorage.removeItem('access');
-    localStorage.removeItem('refresh');
-    window.location.href = 'login.html';
-}
-document.addEventListener('DOMContentLoaded', renderNav);
+  } else {
+    html = `<a href="index.html">Home</a><a href="login.html">Login</a><a href="register.html">Register</a>`;
+  }
+
+  if (navHolder) navHolder.innerHTML = html;
+
+  const logoutBtn = document.getElementById('logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem(JWT_KEY);
+      window.location.href = 'login.html';
+    });
+  }
+});

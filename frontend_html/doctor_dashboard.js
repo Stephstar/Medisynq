@@ -1,65 +1,27 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = 'login.html';
-        return;
-    }
+// frontend_html/doctor_dashboard.js
+document.addEventListener('DOMContentLoaded', async () => {
+  const token = localStorage.getItem(JWT_KEY);
+  if (!token) { window.location.href = 'login.html'; return; }
 
-    // Fetch patients for doctor
-    fetch('http://127.0.0.1:8000/api/patients/doctor-patient-list/', {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(patients => {
-        const patientSelect = document.getElementById('patientSelect');
-        patients.forEach(p => {
-            patientSelect.innerHTML += `<option value="${p.id}">${p.username} (${p.email})</option>`;
-        });
-    });
+  // load patients for this doctor via patients/doctor-list/ (your patients view)
+  const res = await fetch(`${API_BASE}patients/doctor-list/`, { headers: authHeaders() });
+  if (!res.ok) { document.getElementById('doctorMessage').textContent = 'Failed to load patients'; return; }
+  const patients = await res.json();
+  const tbody = document.querySelector('#patientsTable tbody');
+  tbody.innerHTML = '';
+  patients.forEach(p => {
+    tbody.innerHTML += `<tr>
+      <td>${p.id}</td>
+      <td>${p.user.username || p.user}</td>
+      <td><a href="patient_detail.html?patient=${p.user.id}">View</a></td>
+      <td><button class="prescribeBtn" data-id="${p.user.id}">Prescribe</button></td>
+    </tr>`;
+  });
 
-    // On patient select, fetch EHR and adherence
-    document.getElementById('patientSelect').addEventListener('change', function() {
-        const patientId = this.value;
-        if (!patientId) return;
-        // Fetch EHR
-        fetch(`http://127.0.0.1:8000/api/patients/ehr/${patientId}/`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
-        .then(res => res.json())
-        .then(ehr => {
-            document.getElementById('ehrDisplay').textContent = ehr.detail || JSON.stringify(ehr, null, 2);
-        });
-        // Fetch adherence
-        fetch(`http://127.0.0.1:8000/api/medications/adherence/${patientId}/`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
-        .then(res => res.json())
-        .then(adherence => {
-            document.getElementById('adherenceDisplay').textContent = adherence.detail || JSON.stringify(adherence, null, 2);
-        });
+  document.querySelectorAll('.prescribeBtn').forEach(b => {
+    b.addEventListener('click', (e) => {
+      const pid = e.target.dataset.id;
+      window.location.href = `prescribe.html?patient=${pid}`;
     });
-
-    // Prescribe medication
-    document.getElementById('prescribeForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const patientId = document.getElementById('patientSelect').value;
-        const medication = document.getElementById('medication').value;
-        const instructions = document.getElementById('instructions').value;
-        if (!patientId) {
-            document.getElementById('prescribeMessage').textContent = 'Select a patient first.';
-            return;
-        }
-        fetch('http://127.0.0.1:8000/api/patients/prescribe/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ patient: patientId, medication, instructions })
-        })
-        .then(res => res.json().then(data => ({ ok: res.ok, data })))
-        .then(({ ok, data }) => {
-            document.getElementById('prescribeMessage').textContent = ok ? 'Medication prescribed!' : (data.detail || 'Prescription failed.');
-        });
-    });
+  });
 });
