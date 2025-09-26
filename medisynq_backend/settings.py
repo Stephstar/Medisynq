@@ -16,7 +16,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgres://medisynq_user:z7GlhCDT3LUXGPEgVLmzj2j81dz22DGr@dpg-d3a5mgn5r7bs73fkp3t0-a/medisynq')
+    'default': env.db('DATABASE_URL', default='postgres://medisynq_e73k_user:d6nEayyPsGHUT4oR9328gK1JTOeq5GuW@dpg-d3b1rjvfte5s739d60p0-a/medisynq_e73k')
 }
 
 STATIC_URL = 'static/'
@@ -100,7 +100,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "https://stephstar.github.io/Medisynq/",
     "https://medisynq-1.onrender.com",
