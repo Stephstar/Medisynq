@@ -69,3 +69,28 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = UserSerializer
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from .serializers import UserSerializer
+import logging
+
+logger = logging.getLogger(__name__)
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            logger.debug(f"Received registration data: {request.data}")
+            serializer = UserSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                logger.debug(f"User registered: {serializer.data}")
+                return Response({"detail": "Registration successful"}, status=status.HTTP_201_CREATED)
+            logger.warning(f"Registration failed: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Registration error: {str(e)}", exc_info=True)
+            return Response({"detail": f"Internal server error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

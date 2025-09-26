@@ -6,7 +6,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 SECRET_KEY = env('SECRET_KEY', default='k94dd#ax7#htzz#e6ara^3fzr_o@$!w7yckcrmboi&w$vkmxe3')
-DEBUG = env.bool('DEBUG', default=True)  # Temp True for debugging; set False later
+DEBUG = env.bool('DEBUG', default=True)  # Keep True for debugging; set False after fixing
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['medisynq-1.onrender.com', 'localhost', '127.0.0.1'])
 
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
@@ -16,7 +16,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default=f'postgres://medisynq_user:z7GlhCDT3LUXGPEgVLmzj2j81dz22DGr@dpg-d3a5mgn5r7bs73fkp3t0-a/medisynq')
+    'default': env.db('DATABASE_URL', default='postgres://medisynq_user:z7GlhCDT3LUXGPEgVLmzj2j81dz22DGr@dpg-d3a5mgn5r7bs73fkp3t0-a/medisynq')
 }
 
 STATIC_URL = 'static/'
@@ -25,7 +25,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-]  # Explicitly add finders to ensure package static files are found
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
     'medisynq_backend.users',
     'medisynq_backend.vitals',
@@ -101,11 +102,10 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://stephstar.github.io/Medisynq/",  # replace with your actual GitHub Pages domain
-    "https://medisynq-1.onrender.com",  # your backend domain
+    "https://stephstar.github.io/Medisynq/",
+    "https://medisynq-1.onrender.com",
 ]
 
-# Add logging to capture errors
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -116,6 +116,13 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'ERROR',  # Set to 'DEBUG' for more details if needed
+        'level': 'DEBUG',  # Detailed output for debugging
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',  # Log SQL queries to catch migration issues
+            'propagate': False,
+        },
     },
 }
