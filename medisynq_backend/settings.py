@@ -96,7 +96,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "https://stephstar.github.io/Medisynq/",  # replace with your actual GitHub Pages domain
     "https://medisynq-1.onrender.com",  # your backend domain
