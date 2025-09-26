@@ -4,6 +4,7 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: |
+      python manage.py makemigrations && \
       python manage.py migrate --noinput && \
       python manage.py collectstatic --noinput && \
       gunicorn medisynq_backend.wsgi:application
@@ -13,7 +14,7 @@ services:
       - key: SECRET_KEY
         value: k94dd#ax7#htzz#e6ara^3fzr_o@$!w7yckcrmboi&w$vkmxe3
       - key: DEBUG
-        value: False
+        value: True  # Temp for debugging
       - key: ALLOWED_HOSTS
         value: medisynq-1.onrender.com
       - key: EMAIL_HOST
@@ -28,4 +29,3 @@ services:
         value: True
       - key: DATABASE_URL
         value: postgres://medisynq_user:z7GlhCDT3LUXGPEgVLmzj2j81dz22DGr@dpg-d3a5mgn5r7bs73fkp3t0-a/medisynq
-

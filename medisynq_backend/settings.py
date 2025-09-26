@@ -6,7 +6,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 SECRET_KEY = env('SECRET_KEY', default='k94dd#ax7#htzz#e6ara^3fzr_o@$!w7yckcrmboi&w$vkmxe3')
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = env.bool('DEBUG', default=True)  # Temp True for debugging; set False later
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['medisynq-1.onrender.com', 'localhost', '127.0.0.1'])
 
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
@@ -22,6 +22,10 @@ DATABASES = {
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]  # Explicitly add finders to ensure package static files are found
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -51,7 +55,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
-
 
 ROOT_URLCONF = 'medisynq_backend.urls'
 
@@ -101,3 +104,18 @@ CORS_ALLOWED_ORIGINS = [
     "https://stephstar.github.io/Medisynq/",  # replace with your actual GitHub Pages domain
     "https://medisynq-1.onrender.com",  # your backend domain
 ]
+
+# Add logging to capture errors
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'ERROR',  # Set to 'DEBUG' for more details if needed
+    },
+}
