@@ -24,4 +24,4 @@ services:
       - key: EMAIL_USE_TLS
         value: True
       - key: DATABASE_URL
-        value: postgres://medisynq_user:z7GlhCDT3LUXGPEgVLmzj2j81dz22DGr@dpg-d3a5mgn5r7bs73fkp3t0-a/medisynq
+        value: postgres://medisynq_e73k_user:d6nEayyPsGHUT4oR9328gK1JTOeq5GuW@dpg-d3b1rjvfte5s739d60p0-a/medisynq_e73k
