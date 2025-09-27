@@ -105,7 +105,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://stephstar.github.io/Medisynq/",
     "https://medisynq-1.onrender.com",
 ]
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
