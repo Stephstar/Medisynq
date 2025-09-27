@@ -9,9 +9,23 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    specialization = serializers.CharField(required=False, allow_blank=True)
+    years_of_experience = serializers.IntegerField(required=False, allow_null=True)
+    hospital = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = User
         fields = ('username', 'email', 'password', 'role', 'dob', 'contact', 'specialization', 'years_of_experience', 'hospital')
+
+    def validate(self, data):
+        if data.get('role') == 'doctor':
+            if not data.get('specialization'):
+                raise serializers.ValidationError({'specialization': 'This field is required for doctors.'})
+            if not data.get('years_of_experience'):
+                raise serializers.ValidationError({'years_of_experience': 'This field is required for doctors.'})
+            if not data.get('hospital'):
+                raise serializers.ValidationError({'hospital': 'This field is required for doctors.'})
+        return data
 
     def create(self, validated_data):
         user = User.objects.create_user(
