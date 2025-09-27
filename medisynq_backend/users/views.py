@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.core.mail import send_mail
+from django.contrib.auth import get_user_model  # <--- THIS WAS THE MISSING IMPORT
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
@@ -66,7 +67,7 @@ class ForgotPasswordView(APIView):
     permission_classes = [permissions.AllowAny]
     def post(self, request):
         email = request.data.get('email')
-        User = get_user_model()
+        User = get_user_model() # Now correctly defined!
         user = User.objects.filter(email=email).first()
         if not user:
             return Response({'detail': 'Email not found.'}, status=status.HTTP_404_NOT_FOUND)
