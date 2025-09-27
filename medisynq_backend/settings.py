@@ -102,7 +102,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    "https://stephstar.github.io/Medisynq/",
+    "https://stephstar.github.io",
     "https://medisynq-1.onrender.com",
 ]
 LOGGING = {
