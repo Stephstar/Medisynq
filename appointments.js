@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!tbody) return;
     tbody.innerHTML = '';
     list.forEach(a => {
-      tbody.innerHTML += `<tr><td>${a.id}</td><td>${a.doctor.username || a.doctor}</td><td>${a.scheduled_time}</td><td>${a.status}</td></tr>`;
+      // Corrected to show doctor username from the nested doctor object
+      tbody.innerHTML += `<tr><td>${a.doctor.username || 'N/A'}</td><td>${new Date(a.scheduled_time).toLocaleString()}</td><td>${a.status}</td><td>${a.notes || ''}</td></tr>`;
     });
   }
   loadAppointments();
@@ -51,6 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = await res.json();
     if (res.ok) {
       if (msg) msg.textContent = 'Booked successfully';
+      // Clear form fields
+      document.getElementById('doctor').value = '';
+      document.getElementById('scheduled_time').value = '';
       setTimeout(() => loadAppointments(), 800);
     } else {
       if (msg) msg.textContent = data.detail || JSON.stringify(data) || 'Booking failed';

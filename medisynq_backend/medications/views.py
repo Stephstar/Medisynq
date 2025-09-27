@@ -1,4 +1,5 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
 from .models import Medication
 from .serializers import MedicationSerializer
 
@@ -15,7 +16,10 @@ class MedicationListCreateView(generics.ListCreateAPIView):
         return Medication.objects.none()
 
     def perform_create(self, serializer):
-        serializer.save(doctor=self.request.user)
+        user = self.request.user
+        if user.role != 'doctor':
+            raise PermissionError("Only doctors can prescribe medications.")
+        serializer.save(doctor=user)
 
 class MedicationDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = MedicationSerializer
@@ -24,27 +28,28 @@ class MedicationDetailView(generics.RetrieveUpdateAPIView):
 
 # Medication adherence view
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth import get_user_model
 
 class AdherenceView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, patient_id):
+        from django.contrib.auth import get_user_model
         User = get_user_model()
         try:
             patient = User.objects.get(id=patient_id, role='patient')
         except User.DoesNotExist:
             return Response({'detail': 'Patient not found.'}, status=status.HTTP_404_NOT_FOUND)
+
         meds = Medication.objects.filter(patient=patient)
         adherence_data = []
         for med in meds:
             adherence_data.append({
+                'id': med.id,
                 'medication': med.name,
+                'dosage': med.dosage,
                 'instructions': med.instructions,
                 'prescribed_by': med.doctor.username if med.doctor else '',
-                'adherence': med.adherence if hasattr(med, 'adherence') else 'N/A',
+                'adherence': med.adherence,
                 'prescribed_on': med.created_at.isoformat() if hasattr(med, 'created_at') else ''
             })
         return Response(adherence_data)

@@ -6,8 +6,8 @@ env = environ.Env()
 environ.Env.read_env()
 
 SECRET_KEY = env('SECRET_KEY', default='k94dd#ax7#htzz#e6ara^3fzr_o@$!w7yckcrmboi&w$vkmxe3')
-DEBUG = env.bool('DEBUG', default=True)  # Keep True for debugging; set False after fixing
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['medisynq-1.onrender.com', 'localhost', '127.0.0.1'])
+DEBUG = env.bool('DEBUG', default=False)  # Keep True for debugging; set False after fixing
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['medisynq-1.onrender.com'])
 
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = env.int('EMAIL_PORT', default=587)

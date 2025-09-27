@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const token = localStorage.getItem('access');
+    const token = localStorage.getItem(JWT_KEY); // Use JWT_KEY from config.js
     if (!token) {
         window.location.href = 'login.html';
         return;
     }
     // Fetch doctor list
-    fetch('http://127.0.0.1:8000/api/users/doctor-list/', {
-        headers: { 'Authorization': `Bearer ${token}` }
+    fetch(`${API_BASE}users/doctor-list/`, { // Aligned API URL
+        headers: authHeaders() // Use authHeaders from config.js
     })
     .then(res => res.json())
     .then(doctors => {
@@ -22,20 +22,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const doctor = document.getElementById('doctorSelect').value;
         const reason = document.getElementById('reason').value;
         let scheduled_time = document.getElementById('scheduled_time').value;
-        if (scheduled_time) {
-            scheduled_time = new Date(scheduled_time).toISOString();
+        if (!scheduled_time) {
+            document.getElementById('consultationMessage').textContent = 'Date & Time are required.';
+            return;
         }
-        const response = await fetch('http://127.0.0.1:8000/api/consultations/book/', {
+        scheduled_time = new Date(scheduled_time).toISOString();
+
+        const response = await fetch(`${API_BASE}consultations/book/`, { // Assuming a book endpoint for consultations like appointments
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
+            headers: jsonHeaders(), // Use jsonHeaders from config.js
             body: JSON.stringify({ doctor, reason, scheduled_time })
         });
         const data = await response.json();
         if (response.ok) {
             document.getElementById('consultationMessage').textContent = 'Consultation booked!';
+             // Clear form fields
+            document.getElementById('doctorSelect').value = '';
+            document.getElementById('reason').value = '';
+            document.getElementById('scheduled_time').value = '';
         } else {
             document.getElementById('consultationMessage').textContent = data.detail || 'Booking failed.';
         }

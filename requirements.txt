@@ -1,8 +1,8 @@
-Django>=4.2,<6.0
+Django
 djangorestframework
 djangorestframework-simplejwt
-django-cors-headers
-django-environ
 whitenoise
 psycopg2-binary
+django-cors-headers
+python-environ
 gunicorn

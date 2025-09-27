@@ -1,7 +1,7 @@
-// frontend_html/register.js
 document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const formData = new FormData(e.target);
+  const form = e.target;
+  const formData = new FormData(form);
   const body = {};
   formData.forEach((v,k) => body[k] = v);
 
@@ -14,6 +14,7 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
   const data = await res.json();
   if (res.ok) {
     document.getElementById('registerMessage').textContent = 'Registration successful! Redirecting...';
+    form.reset();
     setTimeout(() => {
       if (data.role === 'doctor') window.location.href = 'doctor_dashboard.html';
       else window.location.href = 'dashboard.html';

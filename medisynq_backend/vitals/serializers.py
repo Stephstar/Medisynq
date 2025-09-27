@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import VitalRecord
 
+
 class VitalRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = VitalRecord
