@@ -16,7 +16,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgresql://medisynq_e73k_user:d6nEayyPsGHUT4oR9328gK1JTOeq5GuW@dpg-d3b1rjvfte5s739d60p0-a/medisynq_e73k')
+    'default': env.db('DATABASE_URL', default='postgres://medisynq_e73k_user:d6nEayyPsGHUT4oR9328gK1JTOeq5GuW@dpg-d3b1rjvfte5s739d60p0-a/medisynq_e73k')
 }
 
 STATIC_URL = 'static/'
