@@ -74,7 +74,7 @@ class ForgotPasswordView(APIView):
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         # Update with your frontend reset URL (GitHub Pages or local for testing)
-        reset_link = f"https://stephstar.github.io/Medisynq/reset-password/{uid}/{token}/"
+        reset_link = f"https://stephstar.github.io/Medisynq/forgot_password/{uid}/{token}/"
         send_mail(
             'Medisynq Password Reset',
             f'Click the link to reset your password: {reset_link}',
