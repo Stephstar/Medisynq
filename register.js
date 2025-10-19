@@ -24,10 +24,27 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
   if (res.ok) {
     localStorage.setItem(JWT_KEY, data.access);
     document.getElementById('registerMessage').textContent = 'Registration successful! Redirecting...';
-    setTimeout(() => {
-      if (data.role === 'doctor') window.location.href = 'doctor_dashboard.html';
-      else window.location.href = 'dashboard.html';
-    }, 1000);
+    try {
+      const profileRes = await fetch(`${API_BASE}users/profile/`, { headers: authHeaders() });
+      if (profileRes.ok) {
+        const profile = await profileRes.json();
+        const role = (profile.role || 'patient').toLowerCase();
+        setTimeout(() => {
+          if (role === 'doctor') window.location.href = 'doctor_dashboard.html';
+          else if (role === 'patient') window.location.href = 'dashboard.html'; // Or create patient_dashboard.html if needed
+          else {
+            console.error('Unknown role:', role);
+            document.getElementById('registerMessage').textContent = `Unknown role: ${role}`;
+            window.location.href = 'dashboard.html';
+          }
+        }, 1000);
+        return;
+      }
+    } catch (err) {
+      console.error('Profile fetch failed:', err);
+    }
+    // Fallback if profile fetch fails
+    setTimeout(() => window.location.href = 'dashboard.html', 1000);
   } else {
     document.getElementById('registerMessage').textContent = (data.detail || JSON.stringify(data)) || 'Registration failed';
   }

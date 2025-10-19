@@ -1,47 +1,62 @@
-// Example: Show role-based dashboard features
-// You should store JWT token after login and use it for API requests
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem(JWT_KEY); // Use JWT_KEY from config.js
-    const roleMessageDiv = document.getElementById('roleMessage');
-    const dashboardFeaturesDiv = document.getElementById('dashboardFeatures');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Medisynq</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="nav.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Medisynq Telemedicine Platform</h1>
+    <nav id="mainNav"></nav>
+  </header>
 
-    if (!token) {
-        if (roleMessageDiv) roleMessageDiv.textContent = 'Please login to view your dashboard.';
-        // Clear dashboard features if not logged in
-        if (dashboardFeaturesDiv) dashboardFeaturesDiv.innerHTML = '';
+  <main>
+    <section id="dashboardContent">
+      <h2>Dashboard</h2>
+      <div id="roleMessage"></div>
+      <div id="dashboardFeatures"></div>
+    </section>
+  </main>
+</body>
+</html>
+
+  <footer>
+    <p>&copy; 2025 Medisynq</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const roleMessage = document.getElementById('roleMessage');
+      const featuresDiv = document.getElementById('dashboardFeatures');
+
+      const token = localStorage.getItem(JWT_KEY);
+      if (!token) {
+        roleMessage.textContent = 'You are not logged in. Please log in to access the dashboard.';
         return;
-    }
+      }
 
-    fetch(`${API_BASE}users/profile/`, { // Aligned API URL
-        headers: authHeaders() // Use authHeaders from config.js
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.role === 'doctor') {
-            if (roleMessageDiv) roleMessageDiv.textContent = 'Doctor Dashboard';
-            if (dashboardFeaturesDiv) dashboardFeaturesDiv.innerHTML = `
-                <ul>
-                    <li><a href="appointments.html">Manage Appointments</a></li>
-                    <li><a href="patients.html">View Patients</a></li>
-                    <li><a href="consultations.html">Consultations</a></li>
-                    <li><a href="profile.html">Profile</a></li>
-                    <li><a href="doctor_dashboard.html">Doctor Specific Dashboard</a></li>
-                </ul>
-            `;
-        } else {
-            if (roleMessageDiv) roleMessageDiv.textContent = 'Patient Dashboard';
-            if (dashboardFeaturesDiv) dashboardFeaturesDiv.innerHTML = `
-                <ul>
-                    <li><a href="appointments.html">Book/View Appointments</a></li>
-                    <li><a href="vitals.html">Submit/View Vitals</a></li>
-                    <li><a href="consultations.html">Consultations</a></li>
-                    <li><a href="profile.html">Profile</a></li>
-                </ul>
-            `;
-        }
-    })
-    .catch(() => {
-        if (roleMessageDiv) roleMessageDiv.textContent = 'Error loading dashboard.';
-        if (dashboardFeaturesDiv) dashboardFeaturesDiv.innerHTML = '';
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const role = payload.role || 'patient'; // Default to 'patient' if undefined
+
+      if (role === 'doctor') {
+        roleMessage.textContent = 'Welcome, Doctor! You can manage your patients and appointments.';
+        featuresDiv.innerHTML = `
+          <div class="feature-card" onclick="window.location.href='patients.html'">View Patients 👥</div>
+          <div class="feature-card" onclick="window.location.href='appointments.html'">Manage Appointments 📅</div>
+          <div class="feature-card" onclick="window.location.href='prescribe.html'">Prescribe Medication 💊</div>
+        `;
+      } else if (role === 'patient') {
+        roleMessage.textContent = 'Welcome, Patient! You can view your health records and appointments.';
+        featuresDiv.innerHTML = `
+          <div class="feature-card" onclick="window.location.href='patient_detail.html'">View EHR 📋</div>
+          <div class="feature-card" onclick="window.location.href='appointments.html'">Book Appointments 📅</div>
+        `;
+      } else {
+        roleMessage.textContent = 'Unknown role. Please contact support.';
+      }
     });
-});
+  </script>
